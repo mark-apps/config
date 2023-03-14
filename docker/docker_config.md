@@ -1,4 +1,4 @@
-## vim /etc/docker/daemon.json  
+### /etc/docker/daemon.json  
 ```json
 {
   "data-root":"/docker",
@@ -15,6 +15,8 @@
 + max-file=3，意味着一个容器有三个日志，分别是id+.json、id+1.json、id+2.json  
 
 > 注：设置后只对新添加的容器有效。  
+
+
 
 **重启docker守护进程**
 ```shell
