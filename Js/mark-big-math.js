@@ -34,8 +34,9 @@ var MarkBigMath = {
 
 //示例 
 var add = MarkBigMath.add(0.1,0.2);
-var sub = MarkkBigMath.sub(1,0.8); 
 console.log("add==" + add);
+
+var sub = MarkBigMath.sub(1,0.8); 
 console.log("sub==" + sub);
 
 
