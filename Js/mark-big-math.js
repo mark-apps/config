@@ -10,7 +10,7 @@ var MarkBigMath = {
 
         //减法
         sub: function (v1, v2) {
-            return this.accAdd(v1, -v2);
+            return this.add(v1, -v2);
         },
 
         //乘法
