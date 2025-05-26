@@ -1,0 +1,9 @@
+{
+  "registry-mirrors": [
+    "https://gyvdwe4d.mirror.aliyuncs.com"
+  ],
+  "insecure-registries": [
+    "myzk.markdev.xyz:6000",
+    "myzk.markdev.xyz:6001"
+  ]
+}

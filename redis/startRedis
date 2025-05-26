@@ -1,0 +1,4 @@
+#!/bin/bash
+/usr/local/redis/bin/redis-server /usr/local/redis/bin/redis.conf
+sleep 1
+ps -ef|grep redis-server|grep -v grep

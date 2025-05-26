@@ -1,0 +1,5 @@
+#export USER_MEM_ARGS="-Xms512m -Xmx512m -XX:MaxPermSize=256m -Dweblogic.threadpool.MinPoolSize=50 -Dweblogic.threadpool.MaxPoolSize=50"
+export USER_MEM_ARGS="-Xms4096m -Xmx4096m -XX:MaxPermSize=1024m -XX:+HeapDumpOnOutOfMemoryError -Dweblogic.threadpool.MinPoolSize=300 -Dweblogic.threadpool.MaxPoolSize=300 -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/logs/domains/cmnet1201_gc.log"
+
+./startAppServer.sh app1201
+set STARTMODE=false

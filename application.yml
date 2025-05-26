@@ -1,0 +1,27 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /
+    session:
+      tracking-modes: cookie
+  tomcat:
+    uri-encoding: UTF-8
+    accept-count: 10000
+    connection-timeout: 120000
+    max-connections: 8192
+    max-http-form-post-size: 10MB
+    accesslog:
+      enabled: true
+      directory: logs
+      pattern: combine
+      prefix: access
+      suffix: .log
+      file-date-format: .yyyy-MM-dd
+      rotate: true
+      rename-on-rotate: true
+  compression:
+    enabled: true
+    mime-types: application/json,text/plain
+logging:
+  config:file:config/logback.xml
+
