@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志级别以及优先级排序: OFF > FATAL > ERROR > WARN > INFO > DEBUG > TRACE > ALL -->
+<!-- Configuration后面的status，这个用于设置log4j2自身内部的信息输出，可以不设置，默认是 OFF，当设置成TRACE时，你会看到log4j2内部各种详细输出 -->
+<!-- monitorInterval：Log4j能够自动检测修改配置 文件和重新配置本身，设置间隔秒数 -->
+<Configuration status="ERROR" monitorInterval="600">
+    <!-- 变量配置 -->
+    <Properties>
+        <!-- 定义日志存储的路径 -->
+        <property name="LOG_HOME">logs</property>
+        <!-- 定义日志文件名称,这里不要配置文件后缀 -->
+        <property name="LOG_FILE_NAME">app</property>
+        <property name="ERROR_FILE_NAME">error</property>
+      
+        <!-- 格式化输出：%date表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度 %msg：日志消息，%n是换行符 -->
+        <!--  <property name="LOG_PATTERN">%date [%-5level] [%-15thread] [%logger{1.}-%M:%L] %msg %xEx{10}%n</property> -->
+        <property name="CONSOLE_PATTERN">%date %-5level : [%logger{1}] %msg %xEx{10}%n</property>
+        <property name="LOG_PATTERN">%date %-5level [%logger{1.}-%M:%L] %msg %xEx{10}%n</property>
+      
+        <property name="DEBUG_PATTERN">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%thread] [%X{CLIENT_IP}] [%logger{1.}-%M:%L] - %m%xEx{10} %n</property>
+        <property name="LOG_PATTERN_2">%d{yyyy-MM-dd HH:mm:ss.SSS} %-5p [%-20thread] [%X{TRACE_ID}] [%-25logger{1}] - %m%xEx{10} %n</property>
+  
+    </Properties>
+
+    <Appenders>
+        <!-- 控制台 -->
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch) . -->
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${CONSOLE_PATTERN}"/>
+        </Console>
+
+        <!-- INFO文件日志 -->
+        <RollingFile name="FILE_LOG" fileName="${LOG_HOME}/${LOG_FILE_NAME}.log" filePattern="${LOG_HOME}/${LOG_FILE_NAME}-%d{yyyyMMdd}-%i.log.gz">
+            <!--ThresholdFilter :日志输出过滤 只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch）-->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout charset="UTF-8" pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <!-- TimeBasedTriggeringPolicy :时间滚动策略,根据当前filePattern配置，日志文件每天滚动一次 -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- SizeBasedTriggeringPolicy :文件大小滚动策略,日志文件大于10MB滚动一次 -->
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个 -->
+            <DefaultRolloverStrategy max="1024">
+                <Delete basePath="${LOG_HOME}/" maxDepth="2">
+                    <IfFileName glob="${LOG_FILE_NAME}-*.log.gz"/>
+                    <!-- Note: 这里的age必须和filePattern协调, 后者是精确到HH, 这里就要写成xH, xd就不起作用,另外数字最好>2,
+                            否则可能造成删除的时候, 最近的文件还处于被占用状态,导致删除不成功. -->
+                    <IfLastModified age="3d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+      
+        <RollingFile name="ROLLING_FILE_ERROR" fileName="${LOG_HOME}/${ERROR_FILE_NAME}.log" filePattern="${LOG_HOME}/${ERROR_FILE_NAME}-%i.log">
+            <PatternLayout pattern="${PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100MB"/>
+            </Policies>
+            <!-- DefaultRolloverStrategy属性如不设置，则默认为最多同一文件夹下7个文件，这里设置了1000 -->
+            <DefaultRolloverStrategy max="1024">
+               <Delete basePath="${LOG_HOME}/" maxDepth="2">
+                    <IfFileName glob="${ERROR_FILE_NAME}-*.log.gz"/>
+                    <!-- Note: 这里的age必须和filePattern协调, 后者是精确到HH, 这里就要写成xH, xd就不起作用,另外数字最好>2,
+                            否则可能造成删除的时候, 最近的文件还处于被占用状态,导致删除不成功. -->
+                    <IfLastModified age="3d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="org" level="INFO"/>
+        <Logger name="com.alibaba" level="ERROR"/>
+        <Logger name="com.legend" level="DEBUG"/>
+        <Logger name="com.legend.util" level="DEBUG"/>
+
+        <Root level="DEBUG">
+            <!-- 输出到控制台 -->
+            <AppenderRef ref="CONSOLE"/>
+            <AppenderRef ref="FILE_LOG"/>
+        </Root>
+    </Loggers>
+</Configuration>
